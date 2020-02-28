@@ -23,6 +23,7 @@ import { ModifiedAccessConditions } from '@azure/storage-blob';
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import { Pipeline as Pipeline_2 } from '@azure/storage-blob';
 import { ProxyOptions } from '@azure/core-http';
+import { Readable } from 'stream';
 import { RequestPolicy } from '@azure/core-http';
 import { RequestPolicyFactory } from '@azure/core-http';
 import { RequestPolicyOptions } from '@azure/core-http';
@@ -146,6 +147,12 @@ export class DataLakeFileClient extends DataLakePathClient {
     create(options?: FileCreateOptions): Promise<FileCreateResponse>;
     flush(position: number, options?: FileFlushOptions): Promise<PathUpdateResponse>;
     read(offset?: number, count?: number, options?: FileReadOptions): Promise<FileReadResponse>;
+    readToBuffer(buffer: Buffer, offset?: number, count?: number, options?: FileReadToBufferOptions): Promise<Buffer>;
+    readToBuffer(offset?: number, count?: number, options?: FileReadToBufferOptions): Promise<Buffer>;
+    readToFile(filePath: string, offset?: number, count?: number, options?: FileReadOptions): Promise<FileReadResponse>;
+    uploadData(data: Buffer | Blob | ArrayBuffer | ArrayBufferView, options?: FileParallelUploadOptions): Promise<PathUpdateResponse>;
+    uploadFile(filePath: string, options?: FileParallelUploadOptions): Promise<PathUpdateResponse>;
+    uploadStream(stream: Readable, options?: FileParallelUploadOptions): Promise<PathUpdateResponse>;
 }
 
 // Warning: (ae-forgotten-export) The symbol "StorageClient" needs to be exported by the entry point index.d.ts
@@ -156,6 +163,7 @@ export class DataLakeFileSystemClient extends StorageClient {
     constructor(url: string, pipeline: Pipeline);
     create(options?: FileSystemCreateOptions): Promise<FileSystemCreateResponse>;
     delete(options?: FileSystemDeleteOptions): Promise<FileSystemDeleteResponse>;
+    exists(options?: FileSystemExistsOptions): Promise<boolean>;
     getAccessPolicy(options?: FileSystemGetAccessPolicyOptions): Promise<FileSystemGetAccessPolicyResponse>;
     getDataLakeLeaseClient(proposeLeaseId?: string): DataLakeLeaseClient;
     getDirectoryClient(directoryName: string): DataLakeDirectoryClient;
@@ -192,6 +200,7 @@ export class DataLakePathClient extends StorageClient {
     constructor(url: string, pipeline: Pipeline);
     create(resourceType: PathResourceType, options?: PathCreateOptions): Promise<PathCreateResponse>;
     delete(recursive?: boolean, options?: PathDeleteOptions): Promise<PathDeleteResponse>;
+    exists(options?: FilePathExistsOptions): Promise<boolean>;
     get fileSystemName(): string;
     getAccessControl(options?: PathGetAccessControlOptions): Promise<PathGetAccessControlResponse>;
     getDataLakeLeaseClient(proposeLeaseId?: string): DataLakeLeaseClient;
@@ -294,6 +303,21 @@ export interface FileFlushOptions extends CommonOptions {
     retainUncommittedData?: boolean;
 }
 
+export interface FileParallelUploadOptions extends CommonOptions {
+    abortSignal?: AbortSignalLike;
+    chunkSize?: number;
+    close?: boolean;
+    conditions?: DataLakeRequestConditions;
+    initialTransferSize?: number;
+    maxConcurrency?: number;
+    onProgress?: (progress: TransferProgressEvent) => void;
+    pathHttpHeaders?: PathHttpHeaders;
+}
+
+export interface FilePathExistsOptions extends CommonOptions {
+    abortSignal?: AbortSignalLike;
+}
+
 // @public (undocumented)
 export interface FileReadHeaders {
     // (undocumented)
@@ -381,6 +405,15 @@ export type FileReadResponse = FileReadHeaders & {
     };
 };
 
+export interface FileReadToBufferOptions extends CommonOptions {
+    abortSignal?: AbortSignalLike;
+    chunkSize?: number;
+    conditions?: DataLakeRequestConditions;
+    maxConcurrency?: number;
+    maxRetryRequestsPerChunk?: number;
+    onProgress?: (progress: TransferProgressEvent) => void;
+}
+
 // @public (undocumented)
 export interface FileSystemCreateHeaders {
     // (undocumented)
@@ -440,6 +473,10 @@ export type FileSystemDeleteResponse = FileSystemDeleteHeaders & {
         parsedHeaders: FileSystemDeleteHeaders;
     };
 };
+
+export interface FileSystemExistsOptions extends CommonOptions {
+    abortSignal?: AbortSignalLike;
+}
 
 // @public (undocumented)
 export interface FileSystemGetAccessPolicyHeaders {
@@ -1192,6 +1229,8 @@ type PathUpdateResponse = PathUpdateHeaders & {
 export { PathUpdateResponse as FileAppendResponse }
 
 export { PathUpdateResponse as FileFlushResponse }
+
+export { PathUpdateResponse as FileUploadResponse }
 
 // @public
 export class Pipeline extends Pipeline_2 {
