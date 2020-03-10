@@ -44,7 +44,8 @@ async function main() {
   const G10: number = 10 * 1024 * 1024 * 1024;
   await fileClient.uploadStream(rs, {
     singleUploadThreshold: 100 * 1024 * 1024,
-    chunkSize: 100 * 1024 * 1024,
+    chunkSize: 24 * 1024 * 1024,
+    maxConcurrency: 100,
     onProgress: (ev: any) => {
       if (ev.loadedBytes - lastLogged > G10) {
         process.stdout.write((ev.loadedBytes / G10).toString() + "% ");
