@@ -5,7 +5,7 @@
 const { DataLakeFileClient } = require("../../src"); // Change to "@azure/storage-file-datalake" in your package
 
 async function main() {
-  const blockBlobSasURL = "https://weioauth3.dfs.core.windows.net/bigfile/blockblob_oauth/Bigfile_block_1048576/Bigfile_block_1048576?sv=2018-03-28&sr=b&sig=3MHvYQB7vH%2FfgVcAzRAjEDedXkVWYyCj6tDfEjMqlbE%3D&se=2029-12-31T16%3A00%3A00Z&sp=r"
+  const blockBlobSasURL = ""
   const fileClientWithSAS = new DataLakeFileClient(
     blockBlobSasURL,
   );
