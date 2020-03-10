@@ -65,10 +65,19 @@ async function upload() {
 
     const begin = new Date();
     console.log("start upload at ", begin);
+
+    let lastLogged = 0;
+    const G10 = 10 * 1024 * 1024 * 1024;
     await fileClient.upload(file, {
       singleUploadThreshold: 100 * 1024 * 1024,
       chunkSize: 100 * 1024 * 1024,
-      pathHttpHeaders: { contentMD5: array }
+      pathHttpHeaders: { contentMD5: array },
+      onProgress: (ev) => {
+        if (ev.loadedBytes - lastLogged > G10) {
+          process.stdout.write((ev.loadedBytes / G10).toString() + "% ");
+          lastLogged = ev.loadedBytes;
+        }
+      },
     });
   
     const end = new Date();

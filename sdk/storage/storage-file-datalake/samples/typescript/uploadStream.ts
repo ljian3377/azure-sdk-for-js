@@ -39,9 +39,18 @@ async function main() {
 
   const begin = new Date();
   console.log("start upload at ", begin);
+
+  let lastLogged = 0;
+  const G10: number = 10 * 1024 * 1024 * 1024;
   await fileClient.uploadStream(rs, {
     singleUploadThreshold: 100 * 1024 * 1024,
     chunkSize: 100 * 1024 * 1024,
+    onProgress: (ev: any) => {
+      if (ev.loadedBytes - lastLogged > G10) {
+        process.stdout.write((ev.loadedBytes / G10).toString() + "% ");
+        lastLogged = ev.loadedBytes;
+      }
+    },
     pathHttpHeaders: { contentMD5: Buffer.from(fileContentMd5, 'base64') }
   });
 

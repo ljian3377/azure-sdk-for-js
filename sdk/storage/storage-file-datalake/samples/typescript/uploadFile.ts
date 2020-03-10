@@ -38,13 +38,13 @@ async function main() {
   console.log("start upload at ", begin);
 
   let lastLogged = 0;
-  const G100: number = 10 * 1024 * 1024 * 1024;
+  const G10: number = 10 * 1024 * 1024 * 1024;
   await fileClient.uploadFile(filePath, {
     singleUploadThreshold: 100 * 1024 * 1024,
     chunkSize: 100 * 1024 * 1024,
     onProgress: (ev: any) => {
-      if (ev.loadedBytes - lastLogged > G100) {
-        process.stdout.write((ev.loadedBytes / G100).toString() + "% ");
+      if (ev.loadedBytes - lastLogged > G10) {
+        process.stdout.write((ev.loadedBytes / G10).toString() + "% ");
         lastLogged = ev.loadedBytes;
       }
     },
