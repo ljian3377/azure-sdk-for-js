@@ -45,11 +45,11 @@ describe("Highlevel Node.js only", () => {
     if (!fs.existsSync(tempFolderPath)) {
       fs.mkdirSync(tempFolderPath);
     }
-    tempFileLarge = await createRandomLocalFile(tempFolderPath, 257, MB);
+    // tempFileLarge = await createRandomLocalFile(tempFolderPath, 257, MB);
     tempFileLargeLength = 257 * MB;
-    tempFileSmall = await createRandomLocalFile(tempFolderPath, 15, MB);
+    // tempFileSmall = await createRandomLocalFile(tempFolderPath, 15, MB);
+    console.log(tempFileSmall);
     tempFileSmallLength = 15 * MB;
-
     recorder.stop();
   });
 
@@ -59,6 +59,27 @@ describe("Highlevel Node.js only", () => {
     fs.unlinkSync(tempFileSmall);
     recorder.stop();
   });
+
+  it.only("upload should work for f2G", async () => {
+    recorder.skip("node", "Temp file - recorder doesn't support saving the file");
+    const tempFile = "f2G";
+    const uploadedBuffer = fs.readFileSync(tempFile);
+    const fileContentMd5 = process.env.MD5 || "";
+
+    let lastLogged = 0;
+    const G10: number = 20 * 1024 * 1024;
+    await fileClient.upload(uploadedBuffer, {
+      chunkSize: 24 * 1024 * 1024,
+      maxConcurrency: 100,
+      onProgress: (ev: any) => {
+        if (ev.loadedBytes - lastLogged > G10) {
+          process.stdout.write((ev.loadedBytes / G10).toString() + "% ");
+          lastLogged = ev.loadedBytes;
+        }
+      },
+      pathHttpHeaders: { contentMD5: Buffer.from(fileContentMd5, 'base64') }
+    });
+  }).timeout(timeoutForLargeFileUploadingTest);
 
   it("upload should work for large data", async () => {
     recorder.skip("node", "Temp file - recorder doesn't support saving the file");
