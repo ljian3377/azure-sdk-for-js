@@ -25,7 +25,8 @@ describe("Aborter", () => {
     await recorder.stop();
   });
 
-  it("Should abort after aborter timeout", async () => {
+  it.only("Should abort after aborter timeout", async () => {
+    console.log("Hello world");
     try {
       await containerClient.create({ abortSignal: AbortController.timeout(1) });
       assert.fail();
