@@ -7,9 +7,9 @@ import { RestError } from "@azure/core-http";
  *
  * @export
  * @class DataLakeAclChangeFailedError
- * @extends {Error}
+ * @extends {RestError}
  */
-export class DataLakeAclChangeFailedError extends Error {
+export class DataLakeAclChangeFailedError extends RestError {
   /**
    * Continuation token to continue next batch of operations.
    *
@@ -17,19 +17,17 @@ export class DataLakeAclChangeFailedError extends Error {
    * @memberof DataLakeAclChangeFailedError
    */
   public continuationToken?: string;
+  constructor(restError: RestError, continuationToken?: string) {
+    super(
+      restError.message,
+      restError.code,
+      restError.statusCode,
+      restError.request,
+      restError.response
+    );
+    super["details"] = restError.details;
 
-  /**
-   * Internal error.
-   *
-   * @type {(RestError | Error)}
-   * @memberof DataLakeAclChangeFailedError
-   */
-  public internalError: RestError | Error;
-
-  constructor(error: RestError | Error, continuationToken?: string) {
-    super(error.message);
     this.name = "DataLakeAclChangeFailedError";
-    this.internalError = error;
     this.continuationToken = continuationToken;
     Object.setPrototypeOf(this, DataLakeAclChangeFailedError.prototype);
   }
