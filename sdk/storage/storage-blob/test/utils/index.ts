@@ -52,7 +52,10 @@ export function getGenericBSU(
     env.STORAGE_CONNECTION_STRING &&
     env.STORAGE_CONNECTION_STRING.startsWith("UseDevelopmentStorage=true")
   ) {
-    return BlobServiceClient.fromConnectionString(getConnectionStringFromEnvironment());
+    return BlobServiceClient.fromConnectionString(
+      getConnectionStringFromEnvironment(),
+      pipelineOptions
+    );
   } else {
     const credential = getGenericCredential(accountType) as StorageSharedKeyCredential;
 
