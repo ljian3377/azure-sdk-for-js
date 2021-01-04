@@ -253,13 +253,8 @@ describe("Emulator Tests", () => {
     const injectedPipeline = new Pipeline(factories);
     blockBlobClient = new BlockBlobClient(blockBlobClient.url, injectedPipeline);
 
-    try {
-      const res = await blockBlobClient.download();
-      const resStr = await bodyToString(res);
-      assert.deepStrictEqual(resStr, body.slice(0, body.length - 1));
-    } catch (err) {
-      console.log(err);
-      // assert.deepStrictEqual(err.code, "AbortError");
-    }
+    const res = await blockBlobClient.download();
+    const resStr = await bodyToString(res);
+    assert.deepStrictEqual(resStr, body.slice(0, body.length - 1));
   });
 });
