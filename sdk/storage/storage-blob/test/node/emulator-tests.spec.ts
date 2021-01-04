@@ -154,7 +154,7 @@ describe("Emulator Tests", () => {
     assert.deepStrictEqual(await bodyToString(result, 512), "\u0000".repeat(512));
   });
 
-  it(`Fault Injection: ServerInternalError`, async () => {
+  it("Fault Injection: ServerInternalError", async () => {
     const faultInjectFactory = requestInjectorPolicy({
       "fault-inject": "ServerInternalError"
     });
@@ -172,7 +172,7 @@ describe("Emulator Tests", () => {
     }
   });
 
-  it(`Fault Injection: NoResponseThenWaitIndefinitely`, async () => {
+  it("Fault Injection: NoResponseThenWaitIndefinitely", async () => {
     const faultInjectFactory = requestInjectorPolicy(
       {
         "fault-inject": "NoResponseThenWaitIndefinitely"
@@ -195,7 +195,7 @@ describe("Emulator Tests", () => {
     }
   });
 
-  it(`Fault Injection: NoResponseThenCloseConnection`, async () => {
+  it("Fault Injection: NoResponseThenCloseConnection", async () => {
     const faultInjectFactory = requestInjectorPolicy({
       "fault-inject": "NoResponseThenCloseConnection"
     });
@@ -214,7 +214,7 @@ describe("Emulator Tests", () => {
     }
   });
 
-  it(`Fault Injection: PartialResponseThenWaitIndefinitely`, async () => {
+  it("Fault Injection: PartialResponseThenWaitIndefinitely", async () => {
     const body: string = "randomstring";
     await blockBlobClient.upload(body, body.length);
 
@@ -240,7 +240,7 @@ describe("Emulator Tests", () => {
     }
   });
 
-  it(`Fault Injection: PartialResponseThenCloseConnection`, async () => {
+  it("Fault Injection: PartialResponseThenCloseConnection", async () => {
     const body: string = "randomstring";
     await blockBlobClient.upload(body, body.length);
 
