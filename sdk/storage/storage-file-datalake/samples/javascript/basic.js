@@ -1,8 +1,12 @@
 /* 
  Setup: Enter your storage account name and shared key in main()
 */
+require("dotenv").config();
 
-const { DataLakeServiceClient, StorageSharedKeyCredential } = require("@azure/storage-file-datalake");
+const {
+  DataLakeServiceClient,
+  StorageSharedKeyCredential
+} = require("@azure/storage-file-datalake");
 
 // Load the .env file if it exists
 require("dotenv").config();
@@ -52,7 +56,10 @@ async function main() {
   const fileSystemClient = serviceClient.getFileSystemClient(fileSystemName);
 
   const createFileSystemResponse = await fileSystemClient.create();
-  console.log(`Create filesystem ${fileSystemName} successfully`, createFileSystemResponse.requestId);
+  console.log(
+    `Create filesystem ${fileSystemName} successfully`,
+    createFileSystemResponse.requestId
+  );
 
   // Create a file
   const content = "hello";

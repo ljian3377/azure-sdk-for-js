@@ -23,7 +23,7 @@ export async function main() {
   const dirName = process.env.DIR_NAME || "";
 
   if (shareName === "" || dirName === "") {
-    console.warn(
+    console.log(
       "Share/directory information not provided, but it is required to run this sample. Exiting."
     );
     return;

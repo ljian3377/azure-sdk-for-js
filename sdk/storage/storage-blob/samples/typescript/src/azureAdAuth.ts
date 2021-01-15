@@ -38,7 +38,7 @@ export async function main() {
     !process.env.AZURE_CLIENT_ID ||
     !process.env.AZURE_CLIENT_SECRET
   ) {
-    console.warn(
+    console.log(
       "Azure AD authentication information not provided, but it is required to run this sample. Exiting."
     );
     return;

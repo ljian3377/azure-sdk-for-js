@@ -21,8 +21,8 @@ require("dotenv").config();
 // In order to see a log of HTTP requests and responses, set the `AZURE_LOG_LEVEL` environment variable to `info`.
 // Alternatively, logging can be enabled at runtime by calling `setLogLevel("info");`
 // `setLogLevel` can be imported from the `@azure/logger` package
-const { setLogLevel } = require("@azure/logger");
-setLogLevel("info");
+// const { setLogLevel } = require("@azure/logger");
+// setLogLevel("info");
 
 async function main() {
   // Fill in following settings before running this sample

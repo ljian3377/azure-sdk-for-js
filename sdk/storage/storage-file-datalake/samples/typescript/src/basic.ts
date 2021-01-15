@@ -1,6 +1,7 @@
 /* 
  Setup: Enter your storage account name and shared key in main()
 */
+require("dotenv").config();
 
 import { DataLakeServiceClient, StorageSharedKeyCredential } from "@azure/storage-file-datalake";
 
