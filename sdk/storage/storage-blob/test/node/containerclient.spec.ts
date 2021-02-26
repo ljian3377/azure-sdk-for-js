@@ -1,17 +1,18 @@
 import * as assert from "assert";
 
 import { getBSU, getConnectionStringFromEnvironment, recorderEnvSetup } from "../utils";
-import { PublicAccessType } from "../../src";
 import {
   ContainerClient,
   newPipeline,
   StorageSharedKeyCredential,
   ContainerSASPermissions,
-  BlobServiceClient
+  BlobServiceClient,
+  PublicAccessType
 } from "../../src";
 import { TokenCredential } from "@azure/core-http";
 import { assertClientUsesTokenCredential } from "../utils/assert";
 import { record, Recorder } from "@azure/test-utils-recorder";
+import { delay } from "../../src/utils/utils.common";
 
 describe("ContainerClient Node.js only", () => {
   let containerName: string;
@@ -59,6 +60,25 @@ describe("ContainerClient Node.js only", () => {
     const result = await containerClient.getAccessPolicy();
     assert.deepEqual(result.signedIdentifiers, containerAcl);
     assert.deepEqual(result.blobPublicAccess, access);
+  });
+
+  it("setAccessPolicy then get with wrong sas", async () => {
+    await containerClient.setAccessPolicy("container");
+
+    const anonymousContainerClient = new ContainerClient(containerClient.url);
+    await anonymousContainerClient.getProperties();
+
+    const tomorrow = new Date();
+    tomorrow.setDate(new Date().getDate() + 1);
+    const sasUrl = await containerClient.generateSasUrl({
+      permissions: ContainerSASPermissions.parse("w"),
+      expiresOn: tomorrow
+    });
+    const sasContainerClient = new ContainerClient(sasUrl);
+    // await sasContainerClient.getProperties();
+
+    await delay(30 * 1000);
+    await sasContainerClient.getProperties();
   });
 
   it("setAccessPolicy should work when permissions, expiry and start undefined", async () => {
